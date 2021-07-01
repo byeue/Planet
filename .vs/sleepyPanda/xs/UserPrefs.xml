@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{FD970053-D342-4EDE-B91E-0DDBB1E19CA0}|Default">
+  <MonoDevelop.Ide.ItemProperties.sleepyPanda PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="sleepyPanda/Services/CommandHandler.cs">
+    <Files>
+      <File FileName="sleepyPanda/Services/CommandHandler.cs" Line="30" Column="39" />
+      <File FileName="sleepyPanda/Modules/ExampleModule.cs" />
+      <File FileName="sleepyPanda/Modules/Planet.cs" />
+      <File FileName="sleepyPanda/appsettings.json" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="sleepyPanda" expanded="True">
+            <Node name="sleepyPanda" expanded="True">
+              <Node name="Modules" expanded="True" />
+              <Node name="Services" expanded="True">
+                <Node name="CommandHandler.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

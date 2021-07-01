@@ -1,0 +1,32 @@
+﻿<Properties StartupConfiguration="{002754CB-D182-436F-9B1E-1E247BCAA329}|Default">
+  <MonoDevelop.Ide.ItemProperties.sleepyPanda PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Template/Services/CommandHandler.cs">
+    <Files>
+      <File FileName="Template/Program.cs" Line="1" Column="1" />
+      <File FileName="Template/appsettings.json" />
+      <File FileName="Template/Services/CommandHandler.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Discord.NET-Template" expanded="True">
+            <Node name="Template" expanded="True">
+              <Node name="Dependencies" expanded="True">
+                <Node name="PackageDependencies" expanded="True" />
+              </Node>
+              <Node name="Services" expanded="True">
+                <Node name="CommandHandler.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{E393796E-7F7B-46B0-9648-DBE64C31C327}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planet/Modules/Planet.cs">
+    <Files>
+      <File FileName="Planet/Modules/ExampleModule.cs" Line="10" Column="17" />
+      <File FileName="Planet/Modules/Planet.cs" Line="11" Column="17" />
+      <File FileName="Planet/appsettings.json" Line="3" Column="29" />
+      <File FileName="Planet/Services/CommandHandler.cs" Line="14" Column="2" />
+      <File FileName="Planet/Program.cs" Line="15" Column="2" />
+      <File FileName="Planet/Modules/.DS_Store" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Planet" expanded="True">
+            <Node name="Planet" expanded="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="Modules" expanded="True">
+                <Node name="Planet.cs" selected="True" />
+              </Node>
+              <Node name="Services" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>sleepyPanda/Planet.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Planet PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
