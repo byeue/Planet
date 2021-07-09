@@ -1,0 +1,12 @@
+name: GitHub Actions
+on: [push]
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Secrets
+        uses: jwsi/secret-parser@v1
+        with:
+          filename: appsettings.json
+          secret-name: token
+          secret-value: ${{ secrets.BOT_TOKEN }}
