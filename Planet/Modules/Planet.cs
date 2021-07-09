@@ -29,7 +29,7 @@ namespace Planet.Modules
         public async Task embedItemAsync(string itemURL)
         {
             await ReplyAsync("Add embed description:");
-            var description = await InteractiveBase.
+            //var description = await InteractiveBase.
 
             var builder = new EmbedBuilder()
                 .WithThumbnailUrl("https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_docs.png")

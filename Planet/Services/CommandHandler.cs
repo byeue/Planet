@@ -45,8 +45,8 @@ namespace Planet.Services
         public async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
         {
             // add speciifc?
-            if (arg3.User.Value.IsBot) return;
-            await Modules.Play.Reaction(arg2, arg3.Message, arg3);
+            //if (arg3.User.Value.IsBot) return;
+            //await Modules.Play.Reaction(arg2, arg3.Message, arg3);
         }
 
         private async Task OnMessageReceived(SocketMessage arg)
