@@ -6,15 +6,20 @@ using Discord.Commands;
 using Discord.Webhook;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using Infrastructure;
 
 namespace Planet.Modules
 {
     public class ExampleModule : ModuleBase<SocketCommandContext>
     {
         private readonly ILogger<ExampleModule> _logger;
+        private readonly Servers _servers;
 
-        public ExampleModule(ILogger<ExampleModule> logger)
-            => _logger = logger;
+        public ExampleModule(ILogger<ExampleModule> logger, Servers servers)
+        {
+            _logger = logger;
+            _servers = servers;
+        }
 
         [Command("ping")]
         public async Task PingAsync()
@@ -34,7 +39,21 @@ namespace Planet.Modules
             var message = await channel.SendMessageAsync($"{messages.Count()} messages deleted.");
             await Task.Delay(2500);
             await message.DeleteAsync();
+        }
 
+        [Command("prefix")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task Prefix(string prefix = null)
+        {
+            if (prefix == null)
+            {
+                var guildPrefix = await _servers.GetGuildPrefix(Context.Guild.Id) ?? "+";
+                await ReplyAsync($"The current prefix is `{guildPrefix}`", false, null);
+                return;
+            }
+
+            await _servers.ModifyGuildPrefix(Context.Guild.Id, prefix);
+            await ReplyAsync($"The prefix has been changed to `{prefix}`");
         }
 
     }

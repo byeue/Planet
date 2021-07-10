@@ -5,16 +5,20 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Planet.Services;
+using static Infrastructure.PlanetContext;
 
 namespace Planet
 {
     class Program
     {
+        public static string trelloKey, trelloToken;
+
         static async Task Main()
         {
             var builder = new HostBuilder()
@@ -32,7 +36,7 @@ namespace Planet
                     x.AddConsole();
                     x.SetMinimumLevel(LogLevel.Debug); // Defines what kind of information should be logged (e.g. Debug, Information, Warning, Critical) adjust this to your liking
                 })
-                .ConfigureDiscordHost<DiscordSocketClient>((context, config) =>
+                .ConfigureDiscordHost((context, config) =>
                 {
                     config.SocketConfig = new DiscordSocketConfig
                     {
@@ -42,16 +46,21 @@ namespace Planet
                     };
 
                     config.Token = context.Configuration["token"];
+                    //reach from db after
+                    trelloKey = context.Configuration["trellokey"];
+                    trelloToken = context.Configuration["trellotoken"];
                 })
                 .UseCommandService((context, config) =>
                 {
                     config.CaseSensitiveCommands = false;
                     config.LogLevel = LogSeverity.Verbose;
-                    config.DefaultRunMode = RunMode.Sync;
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddHostedService<CommandHandler>();
+                    services
+                    .AddHostedService<CommandHandler>()
+                    .AddDbContext<PlanetContext>()
+                    .AddSingleton<Servers>();
                 })
                 .UseConsoleLifetime();
             
