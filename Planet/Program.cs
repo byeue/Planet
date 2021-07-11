@@ -17,7 +17,7 @@ namespace Planet
 {
     class Program
     {
-        public static string trelloKey, trelloToken;
+        public static string trelloKey;
 
         static async Task Main()
         {
@@ -48,7 +48,6 @@ namespace Planet
                     config.Token = context.Configuration["token"];
                     //reach from db after
                     trelloKey = context.Configuration["trellokey"];
-                    trelloToken = context.Configuration["trellotoken"];
                 })
                 .UseCommandService((context, config) =>
                 {
@@ -60,7 +59,9 @@ namespace Planet
                     services
                     .AddHostedService<CommandHandler>()
                     .AddDbContext<PlanetContext>()
-                    .AddSingleton<Servers>();
+                    .AddSingleton<Servers>()
+                    .AddSingleton<Trellos>()
+                    .AddSingleton<Utilities.Trello>();
                 })
                 .UseConsoleLifetime();
             

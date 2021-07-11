@@ -26,6 +26,7 @@
       <None Remove="Microsoft.AspNet.WebApi.Client" />
       <None Remove="Newtonsoft.Json" />
       <None Remove="Remote.Linq.Newtonsoft.Json" />
+      <None Remove="Utilities %28copy%29\" />
     </ItemGroup>
     <ItemGroup>
       <None Update="appsettings.json">
@@ -34,5 +35,13 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Utilities\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Utilities\Trello.cs">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Compile>
     </ItemGroup>
 </Project>

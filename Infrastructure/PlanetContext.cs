@@ -7,8 +7,7 @@ namespace Infrastructure
     {
 
         public DbSet<Server> Servers { get; set; }
-        public DbSet<Rank> Ranks { get; set; }
-        public DbSet<TrelloTokens> TrelloTokens { get; set; }
+        public DbSet<Trello> Trellos { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -20,20 +19,13 @@ namespace Infrastructure
     {
         public ulong Id { get; set; }
         public string Prefix { get; set; }
-        public string TrelloKey { get; set; }
     }
 
-    public class Rank
+    public class Trello
     {
-        public int Id { get; set; } // db ref only
-        public ulong RoleId { get; set; }
-        public ulong ServerId { get; set; }
-    }
-
-    public class TrelloTokens
-    {
-        public int Id { get; set; } // db ref only
+        public ulong Id { get; set; } // db ref only
         public ulong UserId { get; set; }
-        public string TrelloToken { get; set; }
+        public string Token { get; set; }
+        public string BoardId { get; set; }
     }
 }

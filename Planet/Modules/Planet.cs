@@ -72,25 +72,5 @@ namespace Planet.Modules
             await ReplyAsync(null, false, embed);*/
             await ReplyAsync($"```{result.Substring(0, 1900)}```", false, null);
         }
-
-        [Command("trellotest")]
-        public async Task trelloTest()
-        {
-            var client = new HttpClient();
-            var result = await client.GetStringAsync($"https://api.trello.com/1/members/me/boards?key={Program.trelloKey}&token={Program.trelloToken}");
-            if (!result.StartsWith("["))
-            {
-                await ReplyAsync("ERROR sending request :(", false, null);
-                return;
-            }
-            JArray arr = JArray.Parse(result);
-            JObject jObj = JObject.Parse(arr[0].ToString());
-
-            //board name test
-            await ReplyAsync(jObj["name"].ToString(), false, null);
-
-            //await ReplyAsync($"```{result.Substring(0, 1900)}```", false, null);
-        }
-
     }
 }

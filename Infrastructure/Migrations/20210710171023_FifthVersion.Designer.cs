@@ -2,14 +2,16 @@
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(PlanetContext))]
-    partial class PlanetContextModelSnapshot : ModelSnapshot
+    [Migration("20210710171023_FifthVersion")]
+    partial class FifthVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,6 +27,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Prefix")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("TrelloKey")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("Servers");
@@ -32,12 +37,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Trello", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<string>("BoardId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("int");
 
                     b.Property<string>("Token")
                         .HasColumnType("longtext");
