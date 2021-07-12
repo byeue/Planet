@@ -19,6 +19,9 @@
       <PackageReference Include="Discord.Addons.Interactive" Version="2.0.0" />
       <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="OAuth.DotNetCore" Version="3.0.1" />
+      <PackageReference Include="System.Net.Http" Version="4.3.4" />
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,6 +30,9 @@
       <None Remove="Newtonsoft.Json" />
       <None Remove="Remote.Linq.Newtonsoft.Json" />
       <None Remove="Utilities %28copy%29\" />
+      <None Remove="OAuth.DotNetCore" />
+      <None Remove="System.Net.Http" />
+      <None Remove="Microsoft.AspNetCore.Http" />
     </ItemGroup>
     <ItemGroup>
       <None Update="appsettings.json">

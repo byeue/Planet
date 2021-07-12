@@ -17,7 +17,7 @@ namespace Planet
 {
     class Program
     {
-        public static string trelloKey;
+        public static string trelloKey, trelloSecret;
 
         static async Task Main()
         {
@@ -48,6 +48,7 @@ namespace Planet
                     config.Token = context.Configuration["token"];
                     //reach from db after
                     trelloKey = context.Configuration["trellokey"];
+                    trelloSecret = context.Configuration["trellosecret"];
                 })
                 .UseCommandService((context, config) =>
                 {

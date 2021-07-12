@@ -32,7 +32,7 @@ namespace Planet.Services
         public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _client.MessageReceived += OnMessageReceived;
-
+            //_client.ReactionAdded += OnReactionAdded;
             _service.CommandExecuted += OnCommandExecuted;
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
         }
@@ -41,7 +41,7 @@ namespace Planet.Services
         {
             // add speciifc?
             if (arg3.User.Value.IsBot) return;
-            await Modules.Play.Reaction(arg2, arg3.Message, arg3);
+            await Modules.TrelloAPI.Reaction(arg2, arg3.Message, arg3);
         }*/
 
         private async Task OnMessageReceived(SocketMessage arg)
@@ -57,9 +57,10 @@ namespace Planet.Services
             await _service.ExecuteAsync(context, argPos, _provider);
         }
 
+        bool Debug = false;
         private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-            if (command.IsSpecified && !result.IsSuccess) await context.Channel.SendMessageAsync($"Error: {result}");
+            if (command.IsSpecified && !result.IsSuccess && Debug == true) await context.Channel.SendMessageAsync($"Error: {result}");
         }
     }
 }
