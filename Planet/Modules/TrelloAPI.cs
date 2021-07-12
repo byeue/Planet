@@ -17,7 +17,6 @@ using OAuth;
 using System.Net;
 using System.Text;
 using System.Web;
-using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 
 namespace Planet.Modules
@@ -94,9 +93,9 @@ namespace Planet.Modules
         /*  [SET-UP]
         ---------------------------------------------------------------------*/
 
-        [Command("trelloauth")]
+        /*[Command("trelloauth")]
         public async Task Authorize()
-        {/*
+        {
             string requestURL = "https://trello.com/1/OAuthGetRequestToken";
             string accessURL = "https://trello.com/1/OAuthGetAccessToken";
             string authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
@@ -135,12 +134,12 @@ namespace Planet.Modules
             {
                 string responseText = reader.ReadToEnd();
                 await ReplyAsync($"request url sent. the response is: {responseText}.");
-            }*/
+            }
             
             
 
             //const oauth = new OAuth(requestURL, accessURL, key, secret, "1.0A", loginCallback, "HMAC-SHA1")
-        }
+        }*/
 
         [Command("trellotoken")]
         public async Task AddTrelloToken(string token)
