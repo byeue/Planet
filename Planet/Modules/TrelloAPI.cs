@@ -18,6 +18,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Planet.Modules
 {
@@ -26,15 +27,33 @@ namespace Planet.Modules
         
         private readonly Utilities.Trello _trello;
         private readonly Servers _servers;
-        private EmbedAuthorBuilder trelloAuthor = new EmbedAuthorBuilder()
-                .WithName("Planet Trello")
-                .WithIconUrl("https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/trello-512.png");
 
         public TrelloAPI(Utilities.Trello trello, Servers servers)
         {
             _trello = trello;
             _servers = servers;
         }
+
+        private enum colour
+        {
+            none,
+            blue,
+            green,
+            orange,
+            purple,
+            red,
+            yellow,
+            sky,
+            lime,
+            pink,
+            black,
+        }
+
+        private EmbedAuthorBuilder trelloAuthor = new EmbedAuthorBuilder()
+                .WithName("Planet Trello")
+                .WithIconUrl("https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/trello-512.png");
+
+        
 
         private async Task<string> CheckToken()
         {
@@ -93,60 +112,55 @@ namespace Planet.Modules
         /*  [SET-UP]
         ---------------------------------------------------------------------*/
 
-        /*[Command("trelloauth")]
-        public async Task Authorize()
+        /*[Command("createEmote")]
+        public async Task CreateEmote()
         {
-            string requestURL = "https://trello.com/1/OAuthGetRequestToken";
-            string accessURL = "https://trello.com/1/OAuthGetAccessToken";
-            string authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
-            string appName = "Planet";
-            string scope = "read,write,account";
-            string expiration = "never";
-            string trellokey = Program.trelloKey;
-            string trellosecret = Program.trelloSecret;
-            string responseToken = "";
-            string responseTokenSecret = "";
-
-            //  https://trello.com/1/OAuthAuthorizeToken?expiration=never&name=Planet&scope=read,write,account&response_type=token&key={trellokey}
-            
-            //request token, accesstoken, 
-            OAuthRequest client = new OAuthRequest
-            {
-                Method = "GET",
-                Type = OAuthRequestType.RequestToken,
-                SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                ConsumerKey = trellokey,
-                ConsumerSecret = trellosecret,
-                RequestUrl = requestURL,
-                Version = "1.0a",
-                Realm = "trello.com"
-            };
-
-            string auth = client.GetAuthorizationQuery();
-
-            var url = client.RequestUrl + "?" + auth;
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.AllowAutoRedirect = true;
-            var response = (HttpWebResponse)request.GetResponse();
-            */
-            /*var encoding = ASCIIEncoding.ASCII;
-            using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
-            {
-                string responseText = reader.ReadToEnd();
-                await ReplyAsync($"request url sent. the response is: {responseText}.");
-            }
-            
+            HttpWebRequest aRequest =(HttpWebRequest)WebRequest.Create("https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/285/ringed-planet_1fa90.png");
+            HttpWebResponse aResponse = (HttpWebResponse)aRequest.GetResponse();
+            var stream = aResponse.GetResponseStream();
             
 
-            //const oauth = new OAuth(requestURL, accessURL, key, secret, "1.0A", loginCallback, "HMAC-SHA1")
+            await Context.Guild.CreateEmoteAsync("testPlanetEmote", new Image(stream));
+            await stream.DisposeAsync();
+
+            
+
         }*/
 
         [Command("trellotoken")]
         public async Task AddTrelloToken(string token)
         {
+            var planetGuild = Context.Client.GetGuild(864275714353135626);
             await Context.Message.DeleteAsync();
             await _trello.AddTokenAsync(Context.User, token);
-            await ReplyAsync($"{Context.User.Username}'s Trello token was updated.");
+
+            var arr = await APIRequest($"https://api.trello.com/1/tokens/{token}/member?key={Program.trelloKey}&token={token}");
+
+            var memberInfo = arr
+                    .Select(x => new
+                    {
+                        username = (string)x["username"],
+                        id = (string)x["id"],
+                        avatarHash = (string)x["avatarHash"],
+                    })
+                    .ToArray();
+
+            var avatarUrl = $"https://trello-members.s3.amazonaws.com/{memberInfo[0].id}/{memberInfo[0].avatarHash}/original.png";
+
+            // TO-DO: store user info into database
+
+            HttpWebRequest aRequest = (HttpWebRequest)WebRequest.Create(avatarUrl);
+            HttpWebResponse aResponse = (HttpWebResponse)aRequest.GetResponse();
+            var stream = aResponse.GetResponseStream();
+
+            await planetGuild.CreateEmoteAsync($"{memberInfo[0].username}", new Image(stream));
+            await stream.DisposeAsync();
+
+            IEmote emote = planetGuild.Emotes.First(e => e.Name == memberInfo[0].username);
+            //message.AddReactionAsync(emote);
+
+            var rMsg = await ReplyAsync($"{emote} {Context.User.Username}'s Trello token was updated.");
+            //await rMsg.AddReactionAsync(planetGuild.Emotes.Where(x => x.Name == memberInfo[0].username).FirstOrDefault());
         }
 
         [Command("trelloBoard")]
@@ -179,6 +193,9 @@ namespace Planet.Modules
             // get lists in boards
             JArray arr = await APIRequest($"https://api.trello.com/1/boards/{boardId}/lists?key={Program.trelloKey}&token={token}");
 
+            // get cards in board
+            JArray arr2 = await APIRequest($"https://api.trello.com/1/boards/{boardId}/cards?key={Program.trelloKey}&token={token}");
+
             // TO-DO: put in embed and add each
 
             var builder = new EmbedBuilder()
@@ -187,13 +204,19 @@ namespace Planet.Modules
 
             for (int i = 0; i < arr.Count; i++)
             {
-                builder.AddField(arr[i]["name"].ToString(), "x cards", false);
+                // get list id
+                var listId = arr
+                    .Select(x => x["id"].ToString())
+                    .ToArray();
+
+                var numCards = arr2.Where(x => x["idList"].ToString() == listId[i]).Count();
+
+                builder.AddField(arr[i]["name"].ToString(), $"{numCards} cards", false);
             }
 
             // TO-DO: get number of cards in a list
 
             var embed = builder.Build();
-
             await ReplyAsync(null, false, embed);
         }
 
@@ -217,41 +240,31 @@ namespace Planet.Modules
 
             //if (arr2.Where(x => x["idList"].ToString() == listId).Select(x => x["labels"].Count()).FirstOrDefault() > 0)
             var numCards = arr2.Where(x => x["idList"].ToString() == listId).Count();
+            var numLabels = arr2.Where(x => x["idList"].ToString() == listId).Select(x => x["labels"].Count()).FirstOrDefault();
+
 
             var cards = arr2
-            .Where(x => x["idList"].ToString() == listId)
-            .Select(x => new
-            {
-                name = (string)x["name"],
-                label = "No label",
-                labelColour = (string)x["name"],
-            })
-            .ToArray();
+                .Where(x => x["idList"].ToString() == listId)
+                .Select(x => new
+                {
+                    name = (string)x["name"],
+                    label = "No label",
+                    labelColour = (string)x["name"],
+                })
+                .ToArray();
 
-            if (arr2.Where(x => x["idList"].ToString() == listId).Select(x => x["labels"].Count()).FirstOrDefault() > 0)
+            if (numLabels > 0)
             {
                 cards = arr2
-            .Where(x => x["idList"].ToString() == listId)
-            .Select(x => new
-            {
-                name = (string)x["name"],
-                label = (string)x["labels"][0]["name"],
-                labelColour = (string)x["labels"][0]["color"]
-            })
-            .ToArray();
+                    .Where(x => x["idList"].ToString() == listId)
+                    .Select(x => new
+                    {
+                        name = (string)x["name"],
+                        label = (string)x["labels"][0]["name"],
+                        labelColour = (string)x["labels"][0]["color"]
+                    })
+                    .ToArray();
             }
-
-            /*cards = arr2
-            .Where(x => x["idList"].ToString() == listId)
-            .Where(x => x["labels"].Count() > 0)
-            .Select(x => new
-            {
-                name = (string)x["name"],
-                label = (string)x["labels"][0]["name"],
-                labelColour = (string)x["labels"][0]["color"]
-            })
-            .ToArray();*/
-
 
             var builder = new EmbedBuilder()
                 .WithTitle($"{arr.Where(x => x["name"].ToString().ToLower() == listName.ToLower()).Select(x => x["name"].ToString()).FirstOrDefault()}")
@@ -261,19 +274,58 @@ namespace Planet.Modules
 
             var emoji = "";
 
+            /*
+             * 0 = none X
+             * 1 = blue 🔵
+             * 2 = green 🟢
+             * 3 = orange 🟠
+             * 4 = purple 🟣
+             * 5 = red 🔴
+             * 6 = yellow 🟡
+             * 7 = sky 🌐
+             * 8 = lime 🥝
+             * 9 = pink 🌸
+             * 10 = black ⚫️*/
+
             for (int i = 0; i < numCards; i++)
             {
-                if (cards[i].labelColour == "lime")
+                Enum.TryParse(cards[i].labelColour, out colour labelColour);
+
+                switch (labelColour)
                 {
-                    emoji = "🥝";
-                }
-                else if (cards[i].labelColour == "pink")
-                {
-                    emoji = "🌸";
-                }
-                else if (cards[i].labelColour == "sky")
-                {
-                    emoji = "🌐";
+                    case colour.none:
+                        emoji = "";
+                        break;
+                    case colour.blue:
+                        emoji = "🔵";
+                        break;
+                    case colour.green:
+                        emoji = "🟢";
+                        break;
+                    case colour.orange:
+                        emoji = "🟠";
+                        break;
+                    case colour.purple:
+                        emoji = "🟣";
+                        break;
+                    case colour.red:
+                        emoji = "🔴";
+                        break;
+                    case colour.yellow:
+                        emoji = "🟡";
+                        break;
+                    case colour.sky:
+                        emoji = "🌐";
+                        break;
+                    case colour.lime:
+                        emoji = "🥝";
+                        break;
+                    case colour.pink:
+                        emoji = "🌸";
+                        break;
+                    case colour.black:
+                        emoji = "⚫️";
+                        break;
                 }
 
                 builder.AddField($"*{cards[i].name}*", $"{emoji} [{cards[i].label}]", false);
@@ -300,6 +352,7 @@ namespace Planet.Modules
                     desc = (string)x["desc"],
                     label = "[No label]",
                     labelColour = (string)x["closed"],
+                    numMembers = (int)x["idMembers"].Count(),
                     //members = (string)x["idMembers"][0],
                     numChecklists = (int)x["idChecklists"].Count(),
                     //checklistId = (string)x["idChecklists"][0]
@@ -315,42 +368,52 @@ namespace Planet.Modules
                     desc = (string)x["desc"],
                     label = (string)x["labels"][0]["name"] ?? "",
                     labelColour = (string)x["labels"][0]["color"] ?? "",
+                    numMembers = (int)x["idMembers"].Count(),
                     //members = (string)x["idMembers"][0],
                     numChecklists = (int)x["idChecklists"].Count(),
                     //checklistId = (string)x["idChecklists"][0]
                 })
                 .ToArray();
             }
-            /*card = arr
-                .Where(x => x["name"].ToString().ToLower() == cardName.ToLower())
-                .Select(x => new
-                {
-                    desc = (string)x["desc"],
-                    label = (string)x["labels"][0]["name"] ?? "",
-                    labelColour = (string)x["labels"][0]["color"] ?? "",
-                    //members = (string)x["idMembers"][0],
-                    numChecklists = (int)x["idChecklists"].Count(),
-                    //checklistId = (string)x["idChecklists"][0]
-                })
-                .ToArray();*/
-
-
-            //await ReplyAsync($"{arr2[0]["checkItems"][0]["name"]}");
-
-
 
             var emoji = "";
-            if (card[0].labelColour == "lime")
+            Enum.TryParse(card[0].labelColour, out colour labelColour);
+
+            switch (labelColour)
             {
-                emoji = "🥝";
-            }
-            else if (card[0].labelColour == "pink")
-            {
-                emoji = "🌸";
-            }
-            else if (card[0].labelColour == "sky")
-            {
-                emoji = "🌐";
+                case colour.none:
+                    emoji = "";
+                    break;
+                case colour.blue:
+                    emoji = "🔵";
+                    break;
+                case colour.green:
+                    emoji = "🟢";
+                    break;
+                case colour.orange:
+                    emoji = "🟠";
+                    break;
+                case colour.purple:
+                    emoji = "🟣";
+                    break;
+                case colour.red:
+                    emoji = "🔴";
+                    break;
+                case colour.yellow:
+                    emoji = "🟡";
+                    break;
+                case colour.sky:
+                    emoji = "🌐";
+                    break;
+                case colour.lime:
+                    emoji = "🥝";
+                    break;
+                case colour.pink:
+                    emoji = "🌸";
+                    break;
+                case colour.black:
+                    emoji = "⚫️";
+                    break;
             }
 
             var builder = new EmbedBuilder()
@@ -366,6 +429,10 @@ namespace Planet.Modules
             {
                 builder.AddField("*Description*", card[0].desc, true);
             }
+            else
+            {
+                builder.AddField("*Description*", "-", true);
+            }
 
             for (int i = 0; i < card[0].numChecklists; i++)
             {
@@ -378,9 +445,12 @@ namespace Planet.Modules
 
                 var arr2 = await APIRequest($"https://api.trello.com/1/checklists/{checklistIds.checklistId}?key={Program.trelloKey}&token={token}");
 
+                //await ReplyAsync($"https://api.trello.com/1/checklists/{checklistIds.checklistId}?key={Program.trelloKey}&token={token}");
+
                 var numItems = arr2.Select(x => x["checkItems"].Count()).FirstOrDefault();
 
                 var checklist = "-";
+                var checklistName = arr2.Select(x => x["name"]).FirstOrDefault();
 
                 if (numItems > 0)
                 {
@@ -392,6 +462,7 @@ namespace Planet.Modules
                             {
                                 name = (string)x["checkItems"][n]["name"],
                                 state = (string)x["checkItems"][n]["state"],
+                                checklistName = (string)x["name"],
                             })
                             .ToArray();
 
@@ -403,13 +474,66 @@ namespace Planet.Modules
                         }
 
                         checklist += $"{check} {checkItems[0].name}\n";
-
-                        //await ReplyAsync($"{checkItems[0].name}\n{checkItems[0].state}");
                     }
                 }
                 
-                builder.AddField("*Checklist:*", checklist, false);
+                builder.AddField($"*{checklistName}*", checklist, false);
             }
+
+            var members = " -";
+            var planetGuild = Context.Client.GetGuild(864275714353135626);
+
+            if (card[0].numMembers > 0)
+            {
+                members = "";
+                for (int i = 0; i < card[0].numMembers; i++)
+                {
+                    var memberIds = arr
+                    .Where(x => x["name"].ToString().ToLower() == cardName.ToLower())
+                    .Select(x => new
+                    {
+                        memberId = (string)x["idMembers"][i]
+                    }).FirstOrDefault();
+
+                    var arr2 = await APIRequest($"https://api.trello.com/1/members/{memberIds.memberId}?key={Program.trelloKey}&token={token}");
+
+                    var memberInfo = arr2
+                            .Select(x => new
+                            {
+                                name = (string)x["username"],
+                                avatarHash = (string)x["avatarHash"],
+                                avatarHashType = x["avatarHash"].Type,
+                            })
+                            .ToArray();
+
+                    if (memberInfo[0].avatarHashType == JTokenType.Null)
+                    {
+                        members += $"\n{Emote.Parse("<:default:864367930489831484>")} @{memberInfo[0].name}";
+                    }
+                    else if (!planetGuild.Emotes.Any(x => x.Name == memberInfo[0].name))
+                    {
+                        var avatarUrl = $"https://trello-members.s3.amazonaws.com/{memberIds.memberId}/{memberInfo[0].avatarHash}/original.png";
+
+                        //await ReplyAsync(avatarUrl, false, null);
+
+                        HttpWebRequest aRequest = (HttpWebRequest)WebRequest.Create(avatarUrl);
+                        HttpWebResponse aResponse = (HttpWebResponse)aRequest.GetResponse();
+                        var stream = aResponse.GetResponseStream();
+
+                        var emote = await planetGuild.CreateEmoteAsync($"{memberInfo[0].name}", new Image(stream));
+
+                        await stream.DisposeAsync();
+                        members += $"\n{emote} @{memberInfo[0].name}";
+                    }
+                    else
+                    {
+                        members += $"\n{planetGuild.Emotes.First(x => x.Name == memberInfo[0].name)} @{memberInfo[0].name}";
+                    }
+                }
+            }
+
+            members = members.Substring(1);
+            builder.AddField("*Members:*", members, false);
 
             // TO-DO: get # of members, image manipulation w member icons as thumbnail/image?
             // or custom emoji with members
@@ -417,7 +541,7 @@ namespace Planet.Modules
             var embed = builder.Build();
 
             var msg = await ReplyAsync(null, false, embed);
-            //await ReplyAsync($"https://api.trello.com/1/checklists/{card[0].checklistId}?key={Program.trelloKey}&token={token}", false, null);
+
         }
     }
 }

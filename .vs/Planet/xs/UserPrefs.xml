@@ -1,20 +1,12 @@
 ﻿<Properties StartupConfiguration="{E393796E-7F7B-46B0-9648-DBE64C31C327}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Planet/Modules/TrelloAPI.cs">
     <Files>
-      <File FileName="Planet/Services/CommandHandler.cs" Line="35" Column="15" />
-      <File FileName="Planet/Program.cs" />
-      <File FileName="Planet/Modules/General.cs" Line="50" Column="23" />
-      <File FileName="Planet/Modules/Planet.cs" Line="28" Column="10" />
-      <File FileName="Infrastructure/Servers.cs" Line="37" Column="27" />
-      <File FileName="Infrastructure/PlanetContext.cs" />
-      <File FileName="Infrastructure/Migrations/20210710145543_ThirdVersion.cs" />
-      <File FileName="Infrastructure/Migrations/20210710145543_ThirdVersion.Designer.cs" />
-      <File FileName="Infrastructure/Trellos.cs" Line="36" Column="1" />
-      <File FileName="Planet/appsettings.json" />
-      <File FileName="Planet/Modules/TrelloAPI.cs" Line="309" Column="15" />
-      <File FileName="Infrastructure/Migrations/20210710171023_FifthVersion.cs" />
-      <File FileName="Infrastructure/Migrations/20210710171023_FifthVersion.Designer.cs" Line="1" Column="1" />
-      <File FileName="Planet/Utilities/Trello.cs" Line="19" Column="13" />
+      <File FileName="Planet/Modules/Planet.cs" Line="29" Column="1" />
+      <File FileName="Planet/Services/CommandHandler.cs" Line="59" Column="10" />
+      <File FileName="Planet/Program.cs" Line="43" Column="38" />
+      <File FileName="Planet/Modules/TrelloAPI.cs" Line="22" Column="37" />
+      <File FileName="Infrastructure/Servers.cs" Line="4" Column="1" />
+      <File FileName="Planet/Modules/General.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -28,7 +20,7 @@
               <Node name="Modules" expanded="True">
                 <Node name="TrelloAPI.cs" selected="True" />
               </Node>
-              <Node name="Utilities" expanded="True" />
+              <Node name="Services" expanded="True" />
             </Node>
           </Node>
         </State>

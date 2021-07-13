@@ -18,6 +18,8 @@ namespace Planet
     class Program
     {
         public static string trelloKey, trelloSecret;
+        public static ulong planetGuildId;
+        public static SocketGuild planetGuild;
 
         static async Task Main()
         {
@@ -49,6 +51,8 @@ namespace Planet
                     //reach from db after
                     trelloKey = context.Configuration["trellokey"];
                     trelloSecret = context.Configuration["trellosecret"];
+                    planetGuildId = Convert.ToUInt64(context.Configuration["planetguildid"]);
+
                 })
                 .UseCommandService((context, config) =>
                 {

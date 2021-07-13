@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Planet.Services
 {
+
     public class CommandHandler : InitializedService
     {
         private readonly IServiceProvider _provider;
@@ -57,7 +58,7 @@ namespace Planet.Services
             await _service.ExecuteAsync(context, argPos, _provider);
         }
 
-        bool Debug = false;
+        bool Debug = true;
         private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             if (command.IsSpecified && !result.IsSuccess && Debug == true) await context.Channel.SendMessageAsync($"Error: {result}");
