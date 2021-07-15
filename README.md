@@ -42,4 +42,4 @@ Trello API Progress
 >*Showcase current commands & progress*
 
 <img width="293" alt="image" src="https://user-images.githubusercontent.com/35664551/125242474-bf86a980-e2ba-11eb-9b1d-bdcf40b63ef3.png">
-<img width="462" alt="image" src="https://user-images.githubusercontent.com/35664551/125242589-e5ac4980-e2ba-11eb-8c06-03aaa3468ad1.png">
+<img width="575" alt="image" src="https://user-images.githubusercontent.com/35664551/125735441-73f91e37-f8fb-437e-bbce-485f4554eff0.png">
